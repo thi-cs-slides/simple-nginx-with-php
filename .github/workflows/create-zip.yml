@@ -1,0 +1,51 @@
+# .github/workflows/create-zip.yml
+name: Create Release ZIP
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  create-zip:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      # Docker-compose für Release vorbereiten
+      - name: Create release docker-compose
+        run: |
+          sed -i 's|build: ./|image: ghcr.io/thi-cs-slides/simple-nginx-with-php:main|' docker-compose.yml
+
+      # ZIP erstellen
+      - name: Create ZIP
+        run: |
+          zip -r release.zip \
+            .vscode/* \
+            docker-compose.yml \
+            src/index.html \
+            logs/.gitkeep \
+            README.md
+
+      # Release erstellen
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          draft: false
+          prerelease: false
+
+      # ZIP als Release Asset hochladen
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release.zip
+          asset_name: release.zip
+          asset_content_type: application/zip
