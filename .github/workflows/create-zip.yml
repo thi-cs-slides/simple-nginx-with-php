@@ -49,3 +49,11 @@ jobs:
           asset_path: ./release.zip
           asset_name: release.zip
           asset_content_type: application/zip
+
+      # Latest Tag setzen/verschieben
+      - name: Move latest tag
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git tag -f latest
+          git push origin latest -f
