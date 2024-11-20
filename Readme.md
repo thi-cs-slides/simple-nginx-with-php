@@ -6,7 +6,7 @@
 2. Install the `PHP Debug` extension in VS Code to enable breakpoints and debugging features.
 3. Install Docker Desktop on your system.
 
-## Docker Configuration
+## Docker and Podman Configuration
 
 The project uses the following `docker-compose.yml` configuration (included in this package):
 
@@ -17,8 +17,8 @@ services:
     ports:
       - "8181:80"
     volumes:
-      - ./src:/var/www/html
-      - ./logs:/var/log/nginx
+      - ./src:/var/www/html:z
+      - ./logs:/var/log/nginx:z
 ```
 
 ## VS Code Debug Configuration
@@ -45,11 +45,13 @@ Xdebug requires a port on your development machine where the PHP server can conn
 ## Running the Environment
 
 ### Start the Server
+
 1. Open a terminal in the project directory
-2. Run `docker-compose up -d`
+2. Run `docker-compose up -d` or `podman-compose up -d`
 3. Access the application at `http://localhost:8181`
 
 ### Debug PHP Code
+
 1. Open your PHP source file in VS Code
 2. Set breakpoints by clicking in the left margin
 3. Start the debugger via the Run menu or F5
@@ -57,4 +59,5 @@ Xdebug requires a port on your development machine where the PHP server can conn
 5. Code execution will pause at your breakpoints
 
 ### Stop the Server
-Run `docker-compose down` to stop and remove the containers.
+
+Run `docker-compose down` or `podman-compose down` to stop and remove the containers.
