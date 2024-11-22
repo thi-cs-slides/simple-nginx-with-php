@@ -4,5 +4,5 @@ services:
     ports:
       - "8181:80"
     volumes:
-      - ./src:/var/www/html
-      - ./logs:/var/log/nginx
+      - ./src:/var/www/html:z
+      - ./logs:/var/log/nginx:z
