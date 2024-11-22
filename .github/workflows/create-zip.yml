@@ -45,8 +45,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: release-${{ github.sha }}
-          release_name: Release ${{ github.sha }}
+          tag_name: latest
+          release_name: Latest Release
           draft: false
           prerelease: false
 
