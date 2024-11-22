@@ -4,11 +4,13 @@
 
 1. Download and unpack this project, then open the folder in VS Code. This is important as the debugging configuration in `.vscode/launch.json` relies on the correct workspace path.
 2. Install the `PHP Debug` extension in VS Code to enable breakpoints and debugging features.
-3. Install Docker Desktop on your system.
+3. Install Docker Desktop or Podman on your system.
+   - For Docker: Install Docker Desktop
+   - For Podman: Install Podman and podman-compose
 
 ## Docker and Podman Configuration
 
-The project uses the following `docker-compose.yml` configuration (included in this package):
+The project uses the following compose configuration (`docker-compose.yml`, included in this package):
 
 ```yml
 services:
@@ -61,3 +63,7 @@ Xdebug requires a port on your development machine where the PHP server can conn
 ### Stop the Server
 
 Run `docker-compose down` or `podman-compose down` to stop and remove the containers.
+
+### Notes for SELinux Users
+
+The `:z` suffix on volume mounts is required for systems with SELinux enabled (like Fedora, RHEL, CentOS). It allows the container to access the mounted directories.
