@@ -1,34 +1,22 @@
 FROM php:8.2-fpm-alpine
 
-# Build dependencies für xdebug
-RUN apk add --no-cache --virtual .build-deps \
-    $PHPIZE_DEPS \
-    linux-headers
-
-# Install xdebug
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && apk del .build-deps
+# Install xdebug with dependencies
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS linux-headers && \
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug && \
+    apk del .build-deps
 
 # Install nginx and supervisor
-RUN apk add --no-cache \
-    nginx \
-    supervisor
+RUN apk add --no-cache nginx supervisor
 
-# Supervisor Konfiguration für beide Prozesse
-RUN mkdir -p /etc/supervisor.d/
-COPY config/supervisor/supervisord.conf /etc/supervisor.d/supervisord.conf
+# COPY Config
+COPY config/ /
 
-COPY config/nginx/nginx.conf /etc/nginx/nginx.conf
-
-COPY config/php/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-COPY config/php/error_reporting.ini /usr/local/etc/php/conf.d/error_reporting.ini
-COPY config/php/php.ini /usr/local/etc/php/php.ini
-
-# PHP-Info / X-Debug bereitlegen
+# PHP-Info / X-Debug and additional mime type
 RUN mkdir -p /var/www/system && \
     echo "<?php phpinfo(); ?>" > /var/www/system/php-info.php && \
-    echo "<?php xdebug_info(); ?>" > /var/www/system/xdebug-info.php
+    echo "<?php xdebug_info(); ?>" > /var/www/system/xdebug-info.php && \
+    sed -i 's/\(application\/javascript.*\);/\1 mjs;/' /etc/nginx/mime.types
 
 # Arbeitsverzeichnis
 WORKDIR /var/www/html
